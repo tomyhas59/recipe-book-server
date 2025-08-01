@@ -20,6 +20,10 @@ public class User {
 
     private String email;
 
+    private String nickname;
+
+    private String password;
+
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Recipe> recipes=new ArrayList<>();
 
