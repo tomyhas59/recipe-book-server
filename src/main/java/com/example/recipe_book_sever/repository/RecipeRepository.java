@@ -1,6 +1,5 @@
 package com.example.recipe_book_sever.repository;
 
-import com.example.recipe_book_sever.model.Favorite;
 import com.example.recipe_book_sever.model.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
