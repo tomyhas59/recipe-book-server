@@ -26,7 +26,6 @@ public class RecipeService {
         User user =userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
         recipe.setCreator(user);
-
         recipe.getIngredients().forEach(i->i.setRecipe(recipe));
         recipe.getInstructions().forEach(i->i.setRecipe(recipe));
 

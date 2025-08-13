@@ -24,7 +24,7 @@ public class RecipeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-return recipeService.getRecentRecipes(page,size);
+        return recipeService.getRecentRecipes(page,size);
     }
 
 
@@ -39,21 +39,21 @@ return recipeService.getRecentRecipes(page,size);
         return recipeService.getCreatorRecipes(creatorId, page, size);
     }
 
-    @GetMapping()
-    public Optional<Recipe> getRecipe(@RequestParam Long recipeId){
+    @GetMapping("/{recipeId}")
+    public Optional<Recipe> getRecipe(@PathVariable Long recipeId){
         return recipeService.getRecipeById(recipeId);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{recipeId}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long recipeId,
                                            @RequestParam String userId) throws AccessDeniedException {
         recipeService.deleteRecipe(recipeId, userId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id,@RequestParam String userId,@RequestBody Recipe updatedRecipe) throws AccessDeniedException {
-     Recipe savedRecipe=   recipeService.updateRecipe(id,userId,updatedRecipe);
+    @PutMapping("/{recipeId}")
+    public ResponseEntity<Recipe> updateRecipe(@PathVariable Long recipeId,@RequestParam String userId,@RequestBody Recipe updatedRecipe) throws AccessDeniedException {
+     Recipe savedRecipe=  recipeService.updateRecipe(recipeId,userId,updatedRecipe);
         return ResponseEntity.ok(savedRecipe);
     }
 
