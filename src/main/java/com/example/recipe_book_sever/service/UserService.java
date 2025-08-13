@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -41,17 +42,12 @@ public class UserService {
        return userRepository.save(user);
     }
 
-    public Optional<User> getUserById(String id) {
+
+
+    public Optional<User> getUser(String id) {
         return userRepository.findById(id);
     }
 
-    public List<Favorite> getUserFavorites(String userId){
-        return favoriteRepository.findByUserId(userId);
-    }
-
-    public List<Recipe> getUserRecipes(String creatorId){
-        return recipeRepository.findByCreatorId(creatorId);
-    }
 
 
 }

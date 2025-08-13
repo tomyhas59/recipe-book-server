@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,8 +38,13 @@ public class RecipeService {
         return recipeRepository.findAll(pageable);
     }
 
-    public Optional<Recipe> getRecipeById(Long id){
-        return recipeRepository.findById(id);
+    public Page<Recipe> getCreatorRecipes(String userId,int page,int size){
+        Pageable pageable =PageRequest.of(page,size,Sort.by(Sort.Direction.DESC,"id"));
+        return recipeRepository.findByCreatorId(userId, pageable);
+    }
+
+    public Optional<Recipe> getRecipeById(Long recipeId){
+        return recipeRepository.findById(recipeId);
     }
 
     public void deleteRecipe(Long recipeId,String userId) throws AccessDeniedException {
@@ -52,28 +56,32 @@ public class RecipeService {
     }
 
     @Transactional
-    public Recipe updateRecipe(Long id, Recipe newRecipe){
-        Recipe recipe=recipeRepository.findById(id).orElseThrow(()->new IllegalArgumentException("레시피를 찾을 수 없습니다."));
+    public Recipe updateRecipe(Long recipeId, String userId, Recipe updatedRecipe) throws AccessDeniedException{
+        Recipe recipe=recipeRepository.findById(recipeId).orElseThrow(()->new IllegalArgumentException("레시피를 찾을 수 없습니다."));
 
-        recipe.setName(newRecipe.getName());
-        recipe.setDescription(newRecipe.getDescription());
-        recipe.setCategory(newRecipe.getCategory());
-        recipe.setImage(newRecipe.getImage());
+        if (!recipe.getCreator().getId().equals(userId)) {
+            throw new AccessDeniedException("본인의 레시피만 수정할 수 있습니다.");
+        }
+
+        recipe.setName(updatedRecipe.getName());
+        recipe.setDescription(updatedRecipe.getDescription());
+        recipe.setCategory(updatedRecipe.getCategory());
+        recipe.setImage(updatedRecipe.getImage());
 
         recipe.getIngredients().clear();
         recipe.getInstructions().clear();
 
-        newRecipe.getIngredients().forEach(i->{
+        updatedRecipe.getIngredients().forEach(i->{
             i.setRecipe(recipe);
             recipe.getIngredients().add(i);
         });
 
-        newRecipe.getInstructions().forEach(i->{
+        updatedRecipe.getInstructions().forEach(i->{
             i.setRecipe(recipe);
             recipe.getInstructions().add(i);
         });
 
-        return recipe;
+        return recipeRepository.save(recipe);
     }
 
 }

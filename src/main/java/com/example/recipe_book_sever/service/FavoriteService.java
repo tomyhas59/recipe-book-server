@@ -22,7 +22,7 @@ public class FavoriteService {
     private  final RecipeRepository recipeRepository;
 
     @Transactional
-    public void addFavorite(String userId, Long recipeId){
+    public void addFavorite(Long recipeId,String userId){
         User user= userRepository.findById(userId)
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
         Recipe recipe=recipeRepository.findById(recipeId)
@@ -39,7 +39,7 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void removeFavorite(String userId, Long recipeId) {
+    public void removeFavorite(Long recipeId,String userId) {
              Favorite favorite = favoriteRepository.findByUserIdAndRecipeId(userId, recipeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "즐겨찾기가 존재하지 않습니다."));
 
