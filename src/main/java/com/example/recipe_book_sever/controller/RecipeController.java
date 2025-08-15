@@ -15,8 +15,8 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @PostMapping
-    public Recipe createRecipe(@RequestBody Recipe recipe) {
-        return recipeService.createRecipe(recipe);
+    public Recipe createRecipe(@RequestParam Long userId, @RequestBody Recipe recipe) {
+        return recipeService.createRecipe(userId,recipe);
     }
 
     @GetMapping

@@ -1,5 +1,6 @@
 package com.example.recipe_book_sever.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,14 +17,15 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;          // 레시피 이름
-    private String description;   // 간단 설명
-    private String category;      // 카테고리
-    private String image;         // 이미지 URL
-    private String content;       // 재료 + 조리법 전체
+    private String name;
+    private String description;
+    private String category;
+    private String image;
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "creatorId")
+    @JsonBackReference
     private User creator;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)

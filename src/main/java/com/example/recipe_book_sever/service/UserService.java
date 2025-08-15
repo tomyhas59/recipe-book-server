@@ -20,6 +20,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     public User createUser(User user) {
         try {
+            // 이메일 중복 체크
+            if (userRepository.existsByEmail(user.getEmail())) {
+                throw new RuntimeException("이미 사용 중인 이메일입니다.");
+            }
+
+            // 닉네임 중복 체크
+            if (userRepository.existsByNickname(user.getNickname())) {
+                throw new RuntimeException("이미 사용 중인 닉네임입니다.");
+            }
+
             // 비밀번호 암호화
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPassword);
@@ -28,14 +38,15 @@ public class UserService {
             return userRepository.save(user);
 
         } catch (DataIntegrityViolationException e) {
-            // 예: 유니크 제약조건 위반 (중복 이메일 등)
+            // DB 제약조건 위반 (중복 등)
             throw new RuntimeException("이미 존재하는 사용자입니다.", e);
 
         } catch (Exception e) {
-            // 그 외 예외 처리
             throw new RuntimeException("사용자 생성 중 오류가 발생했습니다.", e);
         }
     }
+
+
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
@@ -45,6 +56,14 @@ public class UserService {
         }
 
         String token = JwtUtil.generateToken(user.getEmail());
-        return new LoginResponse(token);
+
+        // 콘솔 출력
+        System.out.println("로그인 성공!");
+        System.out.println("사용자 ID: " + user.getId());
+        System.out.println("이메일: " + user.getEmail());
+        System.out.println("닉네임: " + user.getNickname());
+        System.out.println("발급된 토큰: " + token);
+
+        return new LoginResponse(token, user.getId(), user.getEmail(), user.getNickname());
     }
 }

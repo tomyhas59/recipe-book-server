@@ -1,7 +1,9 @@
 package com.example.recipe_book_sever.service;
 
 import com.example.recipe_book_sever.model.Recipe;
+import com.example.recipe_book_sever.model.User;
 import com.example.recipe_book_sever.repository.RecipeRepository;
+import com.example.recipe_book_sever.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,13 @@ import java.util.List;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private  final UserRepository userRepository;
+    public Recipe createRecipe(Long userId, Recipe recipe) {
 
-    public Recipe createRecipe(Recipe recipe) {
+        User user = userRepository.findById(userId).
+                orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));;
 
+        recipe.setCreator(user);
         return recipeRepository.save(recipe);
     }
 
