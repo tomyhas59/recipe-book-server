@@ -1,6 +1,8 @@
 package com.example.recipe_book_sever.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,5 +31,7 @@ public class Recipe {
     private User creator;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @JsonBackReference
     private List<Favorite> favorites = new ArrayList<>();
 }
