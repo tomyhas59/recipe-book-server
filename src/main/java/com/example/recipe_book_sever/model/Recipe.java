@@ -2,6 +2,7 @@ package com.example.recipe_book_sever.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,16 +23,16 @@ public class Recipe {
     private String name;
     private String description;
     private String category;
-    private String image;
     private String content;
+    private String image;
+
 
     @ManyToOne
     @JoinColumn(name = "creatorId")
-    @JsonBackReference
+    @JsonIgnoreProperties({"recipes", "favorites", "password"})
     private User creator;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    @JsonBackReference
+    @JsonIgnoreProperties({"recipe", "user"})
     private List<Favorite> favorites = new ArrayList<>();
 }
